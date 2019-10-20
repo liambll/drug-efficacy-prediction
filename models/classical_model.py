@@ -168,21 +168,16 @@ def build_stack_models(base_models, X_train, y_train):
     ###############################
     ### PREPARE DATA FOR STACKING #
     ###############################
-    print('Preparing data for model stacking')
-    from sklearn.preprocessing import OneHotEncoder
-    label_encoder = OneHotEncoder(categories='auto', sparse=False)
-    label_encoder.fit(np.unique(y_train).reshape(-1, 1))
-    nb_classes = len(label_encoder.categories_[0])
-    
+    print('Preparing data for model stacking')    
     # Get base models' prediction for test set: simply use the trained models to predict on test set
-    X_test_stack = np.zeros([X_test.shape[0], len(base_models)*nb_classes])
+    X_test_stack = np.zeros([X_test.shape[0], len(base_models)])
     for i in range(len(base_models)):
         model = base_models[i]
-        X_test_stack[:, i*nb_classes:(i+1)*nb_classes] = label_encoder.transform(model.predict(X_test).reshape(-1, 1))
+        X_test_stack[:, i] = model.predict(X_test)
             
     # Get base models' prediction for train set: use 3-fold split, train model on 2 parts and predict on 3rd part
     splits = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=0).split(X=X_train, y=y_train)
-    X_train_stack = np.zeros([X_train.shape[0], len(base_models)*nb_classes])
+    X_train_stack = np.zeros([X_train.shape[0], len(base_models)])
     for train_index, val_index in splits:
         # train and validation set
         X_tr, X_val = X_train[train_index], X_train[val_index]
@@ -194,8 +189,7 @@ def build_stack_models(base_models, X_train, y_train):
             with warnings.catch_warnings():
                 warnings.simplefilter('ignore')  # disable the warning on default optimizer
                 model.fit(X_tr, y_tr)
-            X_train_stack[val_index, i*nb_classes:(i+1)*nb_classes] = \
-                label_encoder.transform(model.predict(X_val).reshape(-1, 1))
+            X_train_stack[val_index, i] = model.predict(X_val)
 
     # Add base models' predictions into the feature space
     X_train_stack = np.concatenate([X_train, X_train_stack], axis=-1)
@@ -222,14 +216,14 @@ def build_stack_models(base_models, X_train, y_train):
     stack_model_names.append('Stack Gradient Boosting Machine')
     stack_model_params.append({'n_estimators':[500, 1000, 2000], 'max_depth':[3, 5, 7]})
     
-    stack_models.append(SVC(probability=True, gamma='auto', tol=0.001, cache_size=200, random_state=0,
-                             decision_function_shape='ovr', class_weight='balanced'))
-    stack_model_names.append('Stack Support Vector Machine')
-    stack_model_params.append({'kernel':['linear', 'rbf'], 'C':[1.0, 10.0, 100.0, 1000.0]})
+#    stack_models.append(SVC(probability=True, gamma='auto', tol=0.001, cache_size=200, random_state=0,
+#                             decision_function_shape='ovr', class_weight='balanced'))
+#    stack_model_names.append('Stack Support Vector Machine')
+#    stack_model_params.append({'kernel':['linear', 'rbf'], 'C':[1.0, 10.0, 100.0, 1000.0]})
     
-    stack_models.append(KNeighborsClassifier())
-    stack_model_names.append('Stack K Nearest Neighbour')
-    stack_model_params.append({'n_neighbors':[5, 10, 15], 'weights':['uniform', 'distance']})          
+#    stack_models.append(KNeighborsClassifier())
+#    stack_model_names.append('Stack K Nearest Neighbour')
+#    stack_model_params.append({'n_neighbors':[5, 10, 15], 'weights':['uniform', 'distance']})          
 
     #########################
     # EVALUATE STACK MODELS #
@@ -273,7 +267,7 @@ if __name__ == '__main__':
     X, y = read_data(data_path, col_smiles='smiles', col_target='HIV_active')
     
     # Get train and test set
-    smiles_train, smiles_test, y_train, y_test = train_test_split(X, y, test_size=config.TEST_RATIO, shuffle=True, stratify=y,
+    smiles_train, smiles_test, y_train, y_test = train_test_split(X.values, y.values, test_size=config.TEST_RATIO, shuffle=True, stratify=y,
                                                       random_state=config.SEED)
     
     # Extract features

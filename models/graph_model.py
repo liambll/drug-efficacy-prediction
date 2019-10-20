@@ -312,6 +312,7 @@ if __name__ == '__main__':
         
     # Read data
     smiles, y = read_data(data_path, col_smiles='smiles', col_target='HIV_active')
+    y = y.reshape(len(y), 1)
     graphs = smiles.apply(lambda x: convert_mol_to_graph(Chem.MolFromSmiles(x))).values
     
     # Build en evaluate graph models

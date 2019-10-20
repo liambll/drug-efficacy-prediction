@@ -26,7 +26,7 @@ def read_data(data_path, col_smiles='smiles', col_target='HIV_active'):
     df_no_na = df[[col_smiles, col_target]].dropna()
 
     X = df_no_na[col_smiles]
-    y = df_no_na[col_target]
+    y = df_no_na[col_target].values
     
     return X, y
 
