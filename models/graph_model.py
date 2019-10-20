@@ -330,7 +330,8 @@ if __name__ == '__main__':
         
         # Build GCN model
         model, scores = build_gcn_model([A_train, X_train, y_train], [A_val, X_val, y_val],
-                                        nb_node_features, nb_classes=1, batch_size=32, nb_epochs=100, lr=0.001,
+                                        nb_node_features, nb_classes=1,
+                                        batch_size=batch_size, nb_epochs=nb_epochs, lr=lr,
                          save_path=os.path.join(save_path, 'graph_models', 'gcn.h5'))
         model_scores.append(scores)
             
@@ -357,7 +358,7 @@ if __name__ == '__main__':
         nb_node_features = X[0].shape[-1]    # Dimension of node features
         model, scores = build_gcn_model([X_train, A_train, E_train, y_train], [X_val, A_val, E_val, y_val],
                                         nb_nodes, nb_node_features, nb_edge_features, nb_classes=1,
-                                        batch_size=32, nb_epochs=100, lr=0.001,
+                                        batch_size=batch_size, nb_epochs=nb_epochs, lr=lr,
                                         save_path=os.path.join(save_path, 'graph_models', 'ecn.h5'))
         model_scores.append(scores)
             

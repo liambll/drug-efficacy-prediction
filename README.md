@@ -13,13 +13,13 @@ We perform stratified random splitting on the dataset: 80% of the images are in 
 * Using these molecular descriptors, we train base models with different hyper parameters
 * The predictions made by these base models are added to the feature space. We then train Level 1 Model Stacking using Cross-Validation on trainset
 
-**2. Graph Convolution Network to learn neural fingerprints **
-<img src="assets/gcn_model.jpg" alt="" width="80%"><br/>
+**2. Graph Convolution Network to learn neural fingerprints**
+<img src="assets/graph_model.jpg" alt="" width="80%"><br/>
 
 * Instead of molecular descriptors, we can train a graph convolutional network on the molecules' graph structures to learn vector representation of molecules. https://arxiv.org/abs/1609.02907
 
 **3. Deep learning and Transfer learning to learn image features (representation learning with Convolutional Neural Network)**
-<img src="assets/smiles2vec_model.jpg" alt="" width="80%"><br/>
+<img src="assets/sequence_model.jpg" alt="" width="80%"><br/>
 
 * Instead of constructing graph representation of molecules, we can use a recurrent neural network on the molecules' SMILES string to learn vector representation of molecules. https://arxiv.org/pdf/1712.02034.pdf
 

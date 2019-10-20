@@ -226,7 +226,8 @@ if __name__ == '__main__':
     model_scores = []
     for model_type in model_list:
         model, scores = build_sequence_model((X_train, y_train), (X_test, y_test), model_type, num_words, input_length,
-                                             output_dim=1, dropout_rate=0.0, batch_size=32, nb_epochs=100, lr=0.001,
+                                             output_dim=1, dropout_rate=0.0,
+                                             batch_size=batch_size, nb_epochs=nb_epochs, lr=lr,
                              save_path=os.path.join(save_path, 'sequence_models', model_type + '.h5'))
         model_scores.append(scores)
             
@@ -246,7 +247,7 @@ if __name__ == '__main__':
                              })
     model_df = model_df[['model', config.METRIC_ACCURACY, config.METRIC_F1_SCORE, config.METRIC_COHEN_KAPPA,
                          config.METRIC_CONFUSION_MATRIX]]
-    model_df.to_csv(os.path.join(config.WORK_DIRECTORY, 'summary_graph_model.csv'), index=False)
+    model_df.to_csv(os.path.join(config.WORK_DIRECTORY, 'summary_sequence_model.csv'), index=False)
     model_df.sort_values(by=[config.METRIC_ACCURACY, config.METRIC_F1_SCORE, config.METRIC_COHEN_KAPPA],
                          ascending=False, inplace=True)
     print('Best model:\n' + str(model_df.iloc[0]))
