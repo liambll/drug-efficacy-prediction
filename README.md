@@ -39,7 +39,6 @@ The models' performance on test set is reported below. The best model is a convo
 | ------ | -------- | -------- | ------------- |
 
 <br/>
-
 Confusion Matrix of the best model's prediction on test set:<br/>
 
 ## Instruction
